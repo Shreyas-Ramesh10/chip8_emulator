@@ -4,12 +4,23 @@
 #include "chip8.h"
 #include "chip8keyboard.h"
 
+const char keyboard_map[CHIP8_TOTAL_KEYS] = {
+    SDLK_0, SDLK_1, SDLK_2, SDLK_3,
+    SDLK_4, SDLK_5, SDLK_6, SDLK_7,
+    SDLK_8, SDLK_9, SDLK_A, SDLK_B,
+    SDLK_C, SDLK_D, SDLK_E, SDLK_F
+};
 int main(int argc, char** argv)
 {
     struct chip8 chip8;
 
+    chip8_init(&chip8);
+
+    printf("%x\n", chip8_keyboard_map(keyboard_map, 0x0f));
     //Test press
     chip8_keyboard_down(&chip8.keyboard, 0x0f);
+    //chip8_keyboard_up(&chip8.keyboard, 0x0f);
+    
     bool is_down = chip8_keyboard_is_down(&chip8.keyboard, 0x0f);
     printf("%i\n", (int)is_down); 
 
@@ -31,12 +42,45 @@ int main(int argc, char** argv)
         0
     );
     SDL_Renderer* renderer = SDL_CreateRenderer(window, 0);
+
+
     while(1)
     {
         SDL_Event event;
         //Handle events, how we close
         while(SDL_PollEvent(&event))
         {
+            switch(event.type)
+            {
+                case SDL_EVENT_QUIT:
+                    goto out;
+                break;
+                case SDL_EVENT_KEY_DOWN:
+                {
+                    SDL_Keycode key = event.key.key;
+                    int vkey = chip8_keyboard_map(keyboard_map, key);
+                    printf("Key is down %x\n", vkey);
+
+                    if (vkey != -1)
+                    {
+                        chip8_keyboard_down(&chip8.keyboard, vkey);
+                    }
+                }
+                    
+                break;
+                case SDL_EVENT_KEY_UP:
+                {
+                     SDL_Keycode key = event.key.key;
+                    int vkey = chip8_keyboard_map(keyboard_map, key);
+                    printf("Key is up %x\n", vkey);
+
+                    if (vkey != -1)
+                    {
+                        chip8_keyboard_up(&chip8.keyboard, vkey);
+                    }
+                }
+                break;
+            }
             if(event.type == SDL_EVENT_QUIT)
             {
                 goto out;
@@ -55,6 +99,8 @@ int main(int argc, char** argv)
 
     SDL_RenderPresent(renderer);
     }
+
+//Goto
 out:
     SDL_DestroyWindow(window);
     return 0;

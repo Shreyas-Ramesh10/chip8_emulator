@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include <stdbool.h>
+
 struct chip8_keyboard
 {
     bool keyboard[CHIP8_TOTAL_KEYS]; //1 if the key is pressed, 0 if it is not
