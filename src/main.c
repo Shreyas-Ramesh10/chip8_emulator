@@ -15,8 +15,11 @@ int main(int argc, char **argv)
     struct chip8 chip8;
     chip8_init(&chip8);
 
-    chip8_screen_set(&chip8.screen, 10, 5);
+    chip8_screen_draw_sprite(&chip8.screen, 0, 0, &chip8.memory.memory[0x05], 5);
 
+    // chip8_screen_set(&chip8.screen, 10, 5);
+
+    /*
     printf("%x\n", chip8_keyboard_map(keyboard_map, 0x0f));
     // Test press
     chip8_keyboard_down(&chip8.keyboard, 0x0f);
@@ -34,6 +37,7 @@ int main(int argc, char **argv)
     printf("%x\n", chip8_stack_pop(&chip8));
     printf("%x\n", chip8_stack_pop(&chip8));
     //-------------------------------------------
+    */
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow(
